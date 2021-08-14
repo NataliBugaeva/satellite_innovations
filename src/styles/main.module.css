@@ -1,0 +1,17 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-grow: 1;
+  background-color: blanchedalmond;
+}
+
+.central_part {
+  display: flex;
+  width: 100%;
+  max-width: 800px;
+  margin: 50px auto;
+  border: 1px solid black;
+}
+
+/*# sourceMappingURL=main.module.css.map */

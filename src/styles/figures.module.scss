@@ -1,0 +1,51 @@
+.figures {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  min-width: 100px;
+
+  &_header {
+    padding: 20px 0;
+    border: 1px solid red;
+    background-color: blueviolet;
+    text-align: center;
+  }
+
+  &_body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 400px;
+    padding: 20px;
+    border: 1px solid red;
+
+    &_square {
+      padding: 30px 0;
+      border: 1px solid blue;
+
+    }
+
+    &_circle {
+      padding: 30px 0;
+      border: 1px solid blue;
+
+    }
+  }
+}
+
+.square {
+  margin: 0 auto;
+  width: 70px;
+  height: 70px;
+  background-color: red;
+}
+
+.circle {
+  margin: 0 auto;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-color: green;
+}
+
+
