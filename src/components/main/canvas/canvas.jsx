@@ -3,10 +3,8 @@ import s from "../../../styles/canvas.module.css";
 
 import {
     actionCreatorCountCanvasCordinates,
-    actionCreatorPushSquareElement,
-    actionCreatorChangeSquaresArr,
-    actionCreatorPushCircleElement,
-    actionCreatorChangeCirclesArr
+    actionCreatorPushElem,
+    actionCreatorChangeElementsArr
 } from "../../../redux/main-reducer";
 
 const Canvas = (props) => {
@@ -41,6 +39,7 @@ const Canvas = (props) => {
         console.log(verxPravo.x - verxLevo.x, nizLevo.y - verxLevo.y);
     }
 
+
     let funcDrop = (e) => {
         e.preventDefault();
 
@@ -64,23 +63,26 @@ const Canvas = (props) => {
 
                 ctx.fillStyle = 'red';
                 ctx.fillRect(squareStart.x, squareStart.y, 70, 70);
-                props.dispatch(actionCreatorPushSquareElement(newSquare));
+
+                props.dispatch(actionCreatorPushElem(newSquare));
                 window.store.getState();
                 break;
 
             case 'circle':
 
                 ctx.fillStyle = 'green';
+
+                let newCircle = {
+                    x: mouseCordinates.x - props.state.mainPage.canvas.leftTop.x,
+                    y: mouseCordinates.y - props.state.mainPage.canvas.leftTop.y,
+                    selected: false
+                };
                 ctx.beginPath();
-                let newCircle = {x: mouseCordinates.x - props.state.mainPage.canvas.leftTop.x,
-                y: mouseCordinates.y - props.state.mainPage.canvas.leftTop.y,
-                selected: false};
-                /*ctx.globalCompositeOperation = 'destination-out'*/
                 ctx.arc(newCircle.x, newCircle.y, 35, 0, Math.PI * 2, true);
                 ctx.fill();
                 ctx.closePath();
 
-                props.dispatch(actionCreatorPushCircleElement(newCircle));
+                props.dispatch(actionCreatorPushElem(newCircle));
                 window.store.getState();
                 break;
 
@@ -88,7 +90,7 @@ const Canvas = (props) => {
                 break;
         }
 
-
+        console.log(window.store.getState());
     }
 
     let funcDragEnter = (e) => {
@@ -116,96 +118,86 @@ const Canvas = (props) => {
             y: e.pageY - props.state.mainPage.canvas.leftTop.y
         };
 
-        let arrSq = props.state.mainPage.arrSquares;
-        let arrCr = props.state.mainPage.arrCircles;
+        let arrElements = props.state.mainPage.arrElements;
 
-
-        arrSq.forEach( i => {
-         if(i.selected === true) {
-            ctx.clearRect(i.topLeft.x -1, i.topLeft.y -1, 71, 71);
-            ctx.fillStyle = 'red';
-            ctx.fillRect(i.topLeft.x, i.topLeft.y, 71, 71);
-            i.selected = false;
-         }
-        });
-
-        arrCr.forEach( i => {
-            if(i.selected === true) {
-                ctx.globalCompositeOperation='source-over';
-                ctx.beginPath();
-                ctx.arc(i.x, i.y, 36, 0, Math.PI * 2, true);
-                ctx.closePath();
-                ctx.fillStyle = 'green';
-                ctx.fill();
+        arrElements.forEach(i => {
+            if (i.selected === true) {
+                if (i.x) {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.beginPath();
+                    ctx.arc(i.x, i.y, 36, 0, Math.PI * 2, true);
+                    ctx.closePath();
+                    ctx.fillStyle = 'green';
+                    ctx.fill();
+                } else if (i.topLeft) {
+                    ctx.clearRect(i.topLeft.x - 1, i.topLeft.y - 1, 71, 71);
+                    ctx.fillStyle = 'red';
+                    ctx.fillRect(i.topLeft.x, i.topLeft.y, 71, 71);
+                }
                 i.selected = false;
-                console.log('олжно было в синий');
             }
-
         })
 
-        let cr = arrCr.filter( i => {
-            let x = mouseCord.x - i.x;
-            let y = mouseCord.y - i.y;
-            let c = Math.sqrt(x**2 + y**2);
-            if (c < 35) {
-                return i;
-            }
-        })[0];
-
-        let sq = arrSq.filter( i => {
-            if ((mouseCord.x >= i.topLeft.x) && (mouseCord.x <= i.topLeft.x + 70)
-                && (mouseCord.y >= i.topLeft.y) && (mouseCord.y <= i.topLeft.y + 70)) {
-                return i;
-            }
-        })[0];
-
-
-        if (cr) {
-            ctx.fillStyle = 'green';
-            ctx.beginPath();
-            ctx.arc(cr.x, cr.y, 35, 0, Math.PI * 2, true);
-            ctx.closePath();
-            ctx.fill();
-            ctx.stroke();
-            cr.selected = true;
-
-            arrCr.forEach( (i, ind, arr) => {
-                if ((i.x === cr.x) && (i.y === cr.y)) {
-                    arrCr.splice(ind, 1);
-                    arrCr.unshift(cr);
-                    /*arrCr[i] = cr;*/
+        let element = arrElements.find(i => {
+            if (i.x) {
+                let x = mouseCord.x - i.x;
+                let y = mouseCord.y - i.y;
+                let c = Math.sqrt(x ** 2 + y ** 2);
+                if (c < 35) {
+                    return i;
                 }
-            })
+            } else if (i.topLeft) {
+                if ((mouseCord.x >= i.topLeft.x) && (mouseCord.x <= i.topLeft.x + 70)
+                    && (mouseCord.y >= i.topLeft.y) && (mouseCord.y <= i.topLeft.y + 70)) {
+                    return i;
+                }
+            }
+        })
 
-            props.dispatch(actionCreatorChangeCirclesArr(arrCr));
-            return;
-        }
+        console.log(element);
 
-        if (sq) {
-            ctx.clearRect(sq.topLeft.x, sq.topLeft.y, 70, 70);
+        if (!element) return ;
+
+        if(element.topLeft) {
+            ctx.clearRect(element.topLeft.x, element.topLeft.y, 70, 70);
             ctx.fillStyle = 'red';
-            ctx.fillRect(sq.topLeft.x, sq.topLeft.y, 70, 70);
-            ctx.strokeRect(sq.topLeft.x, sq.topLeft.y, 70, 70);
-            sq.selected = true;
+            ctx.fillRect(element.topLeft.x, element.topLeft.y, 70, 70);
+            ctx.strokeRect(element.topLeft.x, element.topLeft.y, 70, 70);
+            element.selected = true;
 
-            arrSq.forEach( (i, ind, arr) => {
-                if (i.topLeft === sq.topLeft) {
-                    arrSq.splice(ind, 1);
-                    arrSq.unshift(sq);
-
-                    /*arrSq[i] = sq;*/
+            arrElements.forEach( (i, ind, arr) => {
+                if (i.topLeft === element.topLeft) {
+                    arrElements.splice(ind, 1);
+                    arrElements.unshift(element);
                 }
             })
 
-            props.dispatch(actionCreatorChangeSquaresArr(arrSq));
+            props.dispatch(actionCreatorChangeElementsArr(arrElements));
             console.log(window.store.getState());
             return;
         }
 
-       /* props.dispatch(actionCreatorChangeCirclesArr(arrCr));
-        props.dispatch(actionCreatorChangeSquaresArr(arrSq));
-        console.log(window.store.getState());*/
-    }
+        if(element.x) {
+            ctx.fillStyle = 'green';
+            ctx.beginPath();
+            ctx.arc(element.x, element.y, 35, 0, Math.PI * 2, true);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            element.selected = true;
+
+            arrElements.forEach( (i, ind, arr) => {
+                if ((i.x === element.x) && (i.y === element.y)) {
+                    arrElements.splice(ind, 1);
+                    arrElements.unshift(element);
+                }
+            })
+
+            props.dispatch(actionCreatorChangeElementsArr(arrElements));
+            return;
+        }
+
+            }
 
     return (
         <div className={s.canvas}>
