@@ -6,6 +6,10 @@ const CHOOSE_ELEMENT = 'CHOOSE-ELEMENT';
 const PUSH_NEW_ELEM = 'PUSH-NEW-ELEM';
 const CHANGE_ELEMENTS_ARR = 'CHANGE-ELEMENTS-ARR';
 
+const CHANGE_MOUSE_IS_DOWN = 'CHANGE-MOUSE-IS-DOWN';
+const CHANGE_SELECTED_ELEMENT = 'CHANGE-SELECTED-ELEMENT';
+const CHANGE_SELECTED_ELEMENT_TYPE = 'CHANGE-SELECTED-ELEMENT-TYPE'
+
 let initialState = {
     figures: {
         pointerX: 0,
@@ -18,10 +22,11 @@ let initialState = {
         leftBottom: {x: 0, y: 0}
     },
     element: '',
-    arrSquares: [],
-    arrCircles: [],
-
-    arrElements: []
+    arrElements: [],
+    mouseIsDown: false,
+    selected: false,
+    /*selectedElement: '',*/
+    selectedElementType: ''
 }
 
 const mainReducer = (state = initialState, action) => {
@@ -51,6 +56,18 @@ const mainReducer = (state = initialState, action) => {
             state.arrElements = action.arrElem;
             return state;
 
+        case CHANGE_MOUSE_IS_DOWN:
+            state.mouseIsDown = action.status;
+            return state;
+
+        case CHANGE_SELECTED_ELEMENT:
+            state.selected = action.element;
+            return state;
+
+        case CHANGE_SELECTED_ELEMENT_TYPE:
+            state.selectedElementType = action.elementType;
+            return state;
+
         default:
             return state;
     }
@@ -71,5 +88,11 @@ export const actionCreatorChoseElem = (elem) => ({type: CHOOSE_ELEMENT, chosenEl
 
 export const actionCreatorPushElem = (elem) => ({type: PUSH_NEW_ELEM, element: elem});
 export const actionCreatorChangeElementsArr = (arrElem) => ({type: CHANGE_ELEMENTS_ARR, arrElem: arrElem});
+
+export const actionCreatorChangeMouseIsDown = (status) => ({type: CHANGE_MOUSE_IS_DOWN, status: status});
+
+export const actionCreatorChangeSelectedElement = (element) => ({type: CHANGE_SELECTED_ELEMENT, element: element});
+
+export const actionCreatorChangeSelectedElementType = (type) => ({type: CHANGE_SELECTED_ELEMENT_TYPE, elementType: type});
 
 export default mainReducer;
