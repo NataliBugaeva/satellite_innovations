@@ -1,17 +1,15 @@
 import React from 'react';
 import s from "../../../styles/figures.module.css";
 
-import {actionCreatorChangeCursorCordinates, actionCreatorChangeElement} from "../../../redux/main-reducer";
+import {
+    actionCreatorChangeElement
+} from "../../../redux/main-reducer";
 
 const Figures = (props) => {
 
-    /* let link = React.createRef();
 
-     let showFigures = () => {
-         alert(link.current.type);
-     }*/
 
-    let mouse = {
+ /*   let mouse = {
         x: 0,
         y: 0
     }
@@ -20,7 +18,7 @@ const Figures = (props) => {
         mouse.x = e.clientX;
         mouse.y = e.clientY;
         props.dispatch(actionCreatorChangeCursorCordinates(mouse));
-    }
+    }*/
 
     let drStart = (e) => {
         e.currentTarget.style.opacity = '.3';
@@ -34,10 +32,14 @@ const Figures = (props) => {
     }
 
 
+
+
+
+
     return (
         <div className={s.figures}>
             <div className={s.figures_header}>
-                <div>x{props.state.mainPage.figures.pointerX} y{props.state.mainPage.figures.pointerY}</div>
+
             </div>
             <div className={s.figures_body}>
                 <div className={s.figures_body_square}>
