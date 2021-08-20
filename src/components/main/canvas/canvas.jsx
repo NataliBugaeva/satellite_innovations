@@ -8,28 +8,45 @@ import {
     actionCreatorChangeMouseIsDown,
     actionCreatorChangeSelectedElement,
     actionCreatorChangeSelectedElementType,
-    actionCreatorButtonDisable
+    actionCreatorButtonDisable,
+    actionCreatorChangeElemOutCords,
+    actionCreatorChangeVisibility
 } from "../../../redux/main-reducer";
 
 const Canvas = (props) => {
+
+    /*
+let elements;
+        if (JSON.parse(localStorage.getItem('elem'))) {
+           elements = JSON.parse(localStorage.getItem('elem'));
+            console.log('это срабатывает при перезагрузке с непустым LS');
+            console.log(elements);
+            let ctx = myCanvas.current.getContext('2d');
+            redraw.call(ctx, elements);
+        } else {
+            elements = [];
+            localStorage.setItem('elem', JSON.stringify([]));
+            console.log('при самой первой загрузке создали в LS elem');
+        }*/
+
     let canvas = props.state.mainPage.canvas;
     let canvasWidth = canvas.rightTop.x - canvas.leftTop.x;
     let canvasHeight = canvas.leftBottom.y - canvas.leftTop.y;
-
-
     let link = React.createRef();
     let myCanvas = React.createRef();
-
-
-    window.onload = () => {
-        clickCanv();
-    }
 
     let verxLevo;
     let nizLevo;
 
     let verxPravo;
     let nizPravo;
+
+
+    window.onload = () => {
+        clickCanv();
+        props.dispatch(actionCreatorCountCanvasCordinates(verxLevo, verxPravo, nizPravo, nizLevo));
+    }
+
 
     let clickCanv = () => {
         let top = link.current.getBoundingClientRect().top;
@@ -52,6 +69,10 @@ const Canvas = (props) => {
 
         let ctx = e.currentTarget.getContext('2d');
 
+        let el;
+
+
+
         switch (props.state.mainPage.element) {
             case 'square':
                 let squareStart = {
@@ -70,6 +91,13 @@ const Canvas = (props) => {
                 ctx.fillStyle = 'red';
                 ctx.fillRect(squareStart.x, squareStart.y, 70, 70);
 
+
+
+
+               el = JSON.parse(localStorage.getItem('elem'));
+               el.unshift(newSquare);
+               localStorage.setItem('elem', JSON.stringify(el));
+
                 props.dispatch(actionCreatorPushElem(newSquare));
                 break;
 
@@ -78,8 +106,8 @@ const Canvas = (props) => {
                 ctx.fillStyle = 'green';
 
                 let newCircle = {
-                   /* x: mouseCordinates.x - props.state.mainPage.canvas.leftTop.x,
-                    y: mouseCordinates.y - props.state.mainPage.canvas.leftTop.y,*/
+                    /* x: mouseCordinates.x - props.state.mainPage.canvas.leftTop.x,
+                     y: mouseCordinates.y - props.state.mainPage.canvas.leftTop.y,*/
                     x: e.clientX - props.state.mainPage.canvas.leftTop.x,
                     y: e.clientY - props.state.mainPage.canvas.leftTop.y,
                     selected: false
@@ -88,6 +116,10 @@ const Canvas = (props) => {
                 ctx.arc(newCircle.x, newCircle.y, 35, 0, Math.PI * 2, true);
                 ctx.fill();
                 ctx.closePath();
+
+                el = JSON.parse(localStorage.getItem('elem'));
+                el.unshift(newCircle);
+                localStorage.setItem('elem', JSON.stringify(el));
 
                 props.dispatch(actionCreatorPushElem(newCircle));
                 break;
@@ -116,8 +148,8 @@ const Canvas = (props) => {
     //функция перерисовки всего массива
     let redraw = (elements, ctx) => {
         elements.reverse();
-        elements.forEach( i => {
-            if(i.topLeft && i.selected === true) {
+        elements.forEach(i => {
+            if (i.topLeft && i.selected === true) {
                 ctx.fillStyle = 'red';
                 ctx.fillRect(i.topLeft.x, i.topLeft.y, 70, 70);
                 ctx.strokeRect(i.topLeft.x, i.topLeft.y, 70, 70);
@@ -137,7 +169,7 @@ const Canvas = (props) => {
                 ctx.arc(i.x, i.y, 36, 0, Math.PI * 2, true);
                 ctx.closePath();
                 ctx.fill();
-            } else alert('хрень какая-то');
+            }
         })
     }
 
@@ -150,7 +182,7 @@ const Canvas = (props) => {
                         elements.splice(ind, 1);
                     }
                 })
-            return elements;
+                return elements;
 
             case 'circle':
                 elements.forEach((i, ind) => {
@@ -158,15 +190,16 @@ const Canvas = (props) => {
                         elements.splice(ind, 1);
                     }
                 })
-            return elements;
+                return elements;
 
 
-            default: return elements;
+            default:
+                return elements;
         }
 
-       /* redraw(elements, ctx);*/
-      /*  elements.reverse();
-        props.dispatch(actionCreatorChangeElementsArr(elements));*/
+        /* redraw(elements, ctx);*/
+        /*  elements.reverse();
+          props.dispatch(actionCreatorChangeElementsArr(elements));*/
     }
 
     //по клику на кнопку удаляем элемент с канваса
@@ -175,27 +208,27 @@ const Canvas = (props) => {
         let elements = props.state.mainPage.arrElements;
         let selectedElement = props.state.mainPage.selected;
         let selectedElementType = props.state.mainPage.selectedElementType;
-        elements = removeFigure(elements,selectedElement,selectedElementType);
+
+        elements = removeFigure(elements, selectedElement, selectedElementType);
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
         redraw(elements, ctx);
         elements.reverse();
+        localStorage.setItem('elem', JSON.stringify(elements));
         props.dispatch(actionCreatorChangeElementsArr(elements));
         props.dispatch(actionCreatorButtonDisable(true));
         console.log(props.state.mainPage.arrElements.length);
     }
 
 
-
-
-
     //это событие на mousedawn
     let mouseClick = (e) => {
+        localStorage.setItem('elem', JSON.stringify(props.state.mainPage.arrElements));
 
         props.dispatch(actionCreatorChangeMouseIsDown(true));
 
         let ctx = e.currentTarget.getContext('2d');
         ctx.strokeStyle = 'black';
-       //координаты мышт на канвасе
+        //координаты мышт на канвасе
         let mouseCord = {
             x: e.clientX - props.state.mainPage.canvas.leftTop.x,
             y: e.clientY - props.state.mainPage.canvas.leftTop.y
@@ -222,8 +255,8 @@ const Canvas = (props) => {
             }
         })
 
-            //проверяю, попал ли клик на каую-нибудь фигуру
-            //если нет, то в пропсах selected и selectedElementType делаю false и прекращаю выполнение ф-ции
+        //проверяю, попал ли клик на каую-нибудь фигуру
+        //если нет, то в пропсах selected и selectedElementType делаю false и прекращаю выполнение ф-ции
         let element = arrElements.find(i => {
             if (i.x) {
                 let x = mouseCord.x - i.x;
@@ -309,23 +342,21 @@ const Canvas = (props) => {
 
     }
 
-   window.onmouseup = (e) => {
-       props.dispatch(actionCreatorChangeMouseIsDown(false));
-       console.log(props.state.mainPage.arrElements.length);
-       console.log(props.state.mainPage.selected);
-       console.log(props.state.mainPage.selectedElementType);
-       console.log(props.state.mainPage.selected,props.state.mainPage.selectedElementType );
-   }
-
-/*
-    let funcMouseUp = (e) => {
+    window.onmouseup = (e) => {
+        props.dispatch(actionCreatorChangeVisibility(true));
         props.dispatch(actionCreatorChangeMouseIsDown(false));
-        console.log(props.state.mainPage.selected,props.state.mainPage.selectedElementType );
+        console.log(props.state.mainPage.arrElements.length);
+        console.log(props.state.mainPage.selected);
+        console.log(props.state.mainPage.selectedElementType);
+        console.log(props.state.mainPage.selected, props.state.mainPage.selectedElementType);
+    }
 
-    }*/
+    /*
+        let funcMouseUp = (e) => {
+            props.dispatch(actionCreatorChangeMouseIsDown(false));
+            console.log(props.state.mainPage.selected,props.state.mainPage.selectedElementType );
 
-
-
+        }*/
 
 
     window.onmousemove = (e) => {
@@ -334,7 +365,7 @@ const Canvas = (props) => {
         /*console.log(ctx);*/
 
 
-        if(props.state.mainPage.selected && props.state.mainPage.mouseIsDown) {
+        if (props.state.mainPage.selected && props.state.mainPage.mouseIsDown) {
             if ((e.clientX < props.state.mainPage.canvas.leftTop.x) || (e.clientX > props.state.mainPage.canvas.rightTop.x)
                 || (e.clientY > props.state.mainPage.canvas.leftBottom.y) || (e.clientY < props.state.mainPage.canvas.leftTop.y)) {
                 console.log('вышли из канваса!');
@@ -342,6 +373,9 @@ const Canvas = (props) => {
                 let elements = props.state.mainPage.arrElements;
                 let selectedElement = props.state.mainPage.selected;
                 let selectedElementType = props.state.mainPage.selectedElementType;
+
+                let elemOutCords;
+
                 switch (selectedElementType) {
                     case 'square':
                         elements.forEach((i, ind) => {
@@ -359,20 +393,29 @@ const Canvas = (props) => {
                         })
                         break;
 
-                    default: return;
+                    default:
+                        return;
                 }
                 /*props.dispatch(actionCreatorChangeElementsArr(elements));*/
                 //это пока не делаю, внимательно читай задание, удаляться должны полностью только
                 //при отпускании мыши, а здесь пока только с канваса удаляю
-               /* props.dispatch(actionCreatorChangeSelectedElement(false));
-                props.dispatch(actionCreatorChangeSelectedElementType(''));*/
+                /* props.dispatch(actionCreatorChangeSelectedElement(false));
+                 props.dispatch(actionCreatorChangeSelectedElementType(''));*/
+
+                (selectedElementType === 'square') ? elemOutCords = {top: e.clientY, left: e.clientX,
+                    backgroundColor: 'red'} : elemOutCords = {top: e.clientY, left: e.clientX,
+                    backgroundColor: 'green', "border-radius": '50%'};
+
 
                 ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-               /* elements.reverse();*/
+                /* elements.reverse();*/
                 redraw(elements, ctx);
 
                 elements.reverse();
+                localStorage.setItem('elem', JSON.stringify(elements));
                 props.dispatch(actionCreatorChangeElementsArr(elements));
+                props.dispatch(actionCreatorChangeElemOutCords(elemOutCords));
+                props.dispatch(actionCreatorChangeVisibility(false));
 
                 /*redraw(props.state.mainPage.arrElements, ctx);*/
                 console.log(props.state.mainPage.arrElements.length);
@@ -384,10 +427,13 @@ const Canvas = (props) => {
 
         if (props.state.mainPage.mouseIsDown && props.state.mainPage.selected) {
             props.dispatch(actionCreatorButtonDisable(false));
+
+            props.dispatch(actionCreatorChangeVisibility(true));
+
             let ctx = e.currentTarget.getContext('2d');
-           /* let canvas = props.state.mainPage.canvas;
-            let canvasWidth = canvas.rightTop.x - canvas.leftTop.x;
-            let canvasHeight = canvas.leftBottom.y - canvas.leftTop.y;*/
+            /* let canvas = props.state.mainPage.canvas;
+             let canvasWidth = canvas.rightTop.x - canvas.leftTop.x;
+             let canvasHeight = canvas.leftBottom.y - canvas.leftTop.y;*/
             //это координаты начала квадрата и центр круга
             let mouseCord = {
                 x: e.clientX - props.state.mainPage.canvas.leftTop.x,
@@ -399,64 +445,70 @@ const Canvas = (props) => {
 
             ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-                switch (selectedElementType) {
-                    case 'square':
-                        elements.forEach((i, ind) => {
-                            if (i.topLeft === selectedElement.topLeft) {
-                                elements.splice(ind, 1);
-                            }
-                        })
-
-                        selectedElement = {
-                            topLeft: {x: mouseCord.x, y: mouseCord.y},
-                            topRight: {x: mouseCord.x + 70, y: mouseCord.y},
-                            bottomRight: {x: mouseCord.x + 70, y: mouseCord.y + 70},
-                            bottomLeft: {x: mouseCord.x, y: mouseCord.y + 70},
-                            selected: true
+            switch (selectedElementType) {
+                case 'square':
+                    elements.forEach((i, ind) => {
+                        if (i.topLeft === selectedElement.topLeft) {
+                            elements.splice(ind, 1);
                         }
+                    })
 
-                        break;
+                    selectedElement = {
+                        topLeft: {x: mouseCord.x, y: mouseCord.y},
+                        topRight: {x: mouseCord.x + 70, y: mouseCord.y},
+                        bottomRight: {x: mouseCord.x + 70, y: mouseCord.y + 70},
+                        bottomLeft: {x: mouseCord.x, y: mouseCord.y + 70},
+                        selected: true
+                    }
 
-                    case 'circle':
+                    break;
 
-                        elements.forEach((i, ind) => {
-                            if ((i.x === selectedElement.x) && (i.y === selectedElement.y)) {
-                                elements.splice(ind, 1);
-                            }
-                        })
+                case 'circle':
 
-                        selectedElement = {
-                            x: mouseCord.x,
-                            y: mouseCord.y,
-                            selected: true
-                        };
-                        break;
+                    elements.forEach((i, ind) => {
+                        if ((i.x === selectedElement.x) && (i.y === selectedElement.y)) {
+                            elements.splice(ind, 1);
+                        }
+                    })
 
-                    default: return;
-                }
+                    selectedElement = {
+                        x: mouseCord.x,
+                        y: mouseCord.y,
+                        selected: true
+                    };
+                    break;
+
+                default:
+                    return;
+            }
             elements.unshift(selectedElement);
             /*props.dispatch(actionCreatorChangeElementsArr(elements));*/
             props.dispatch(actionCreatorChangeSelectedElement(selectedElement));
             props.dispatch(actionCreatorChangeSelectedElementType(selectedElementType));
             redraw(elements, ctx);
             elements.reverse();
+            localStorage.setItem('elem', JSON.stringify(elements));
             props.dispatch(actionCreatorChangeElementsArr(elements));
             console.log(props.state.mainPage.arrElements.length);
         }
     }
-
-
-
+    let funcLoad = (e) => {
+        let ctx = e.currentTarget.getContext('2d');
+        console.log('это ctx из html' + ctx);
+        /*redraw.call(ctx, props.state.mainPage.arrElements);*/
+    }
 
     return (
-        <div className={s.canvas} >
+        <div className={s.canvas}>
             <div className={s.canvas_header}>
                 <button disabled={props.state.mainPage.buttonState}
-                        onClick={clickButton}>delete</button>
+                        onClick={clickButton}>delete
+                </button>
             </div>
             <div className={s.canvas_body} ref={link}>
                 <canvas ref={myCanvas} className={s.block_with_canvas}
 
+                        onLoad={(e) => {funcLoad(e)}}
 
                         onMouseDown={(e) => {
                             mouseClick(e)
@@ -464,9 +516,9 @@ const Canvas = (props) => {
                         onMouseMove={(e) => {
                             funcMouseMove(e)
                         }}
-                       /* onMouseUp={(e) => {
-                            funcMouseUp(e)
-                        }}*/
+                    /* onMouseUp={(e) => {
+                         funcMouseUp(e)
+                     }}*/
                         onDragEnter={(e) => funcDragEnter(e)}
                         onDragOver={(e) => funcDragOver(e)}
                         onDrop={(e) => funcDrop(e)}
@@ -479,6 +531,8 @@ const Canvas = (props) => {
                 >square
                 </canvas>
             </div>
+            <div className={s.elem_out}
+                 hidden={props.state.mainPage.visibility} style={props.state.mainPage.elemOutCords}></div>
         </div>
     )
 }

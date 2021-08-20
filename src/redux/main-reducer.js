@@ -12,6 +12,10 @@ const CHANGE_SELECTED_ELEMENT_TYPE = 'CHANGE-SELECTED-ELEMENT-TYPE'
 
 const CHANGE_BUTTON_DASABLE = 'CHANGE-BUTTON-DASABLE';
 
+const CHANGE_ELEM_OUT_CORDS = 'CHANGE-ELEM-OUT-CORDS';
+const CHANGE_VISIBILITY = "CHANGE-VISIBILITY";
+
+
 let initialState = {
   /*  figures: {
         pointerX: 0,
@@ -30,16 +34,19 @@ let initialState = {
     /*selectedElement: '',*/
     selectedElementType: '',
 
-    buttonState: true
+    buttonState: true,
+
+    elemOutCords: {
+        top: -9999999999999,
+        left: -999999999999
+    },
+
+    visibility: false
 }
 
 const mainReducer = (state = initialState, action) => {
     switch (action.type) {
-   /*     case CHANGE_CURSOR_CORDINATES:
-            state.figures.pointerX = action.x;
-            state.figures.pointerY = action.y;
-            return state;
-*/
+
         case COUNT_CANVAS_CORDINATES:
             state.canvas.leftTop = action.leftTop;
             state.canvas.rightTop = action.rightTop;
@@ -76,6 +83,15 @@ const mainReducer = (state = initialState, action) => {
             state.buttonState = action.disabled;
             return state;
 
+        case CHANGE_ELEM_OUT_CORDS:
+            state.elemOutCords = action.elemOutCords;
+            return state;
+
+        case CHANGE_VISIBILITY:
+            state.visibility = action.visibility;
+            return state;
+
+
         default:
             return state;
     }
@@ -104,4 +120,8 @@ export const actionCreatorChangeSelectedElement = (element) => ({type: CHANGE_SE
 export const actionCreatorChangeSelectedElementType = (type) => ({type: CHANGE_SELECTED_ELEMENT_TYPE, elementType: type});
 
 export const actionCreatorButtonDisable = (status) => ({type: CHANGE_BUTTON_DASABLE, disabled: status});
+
+export const actionCreatorChangeElemOutCords = (elemOutCords) => ({type: CHANGE_ELEM_OUT_CORDS, elemOutCords: elemOutCords});
+export const actionCreatorChangeVisibility = (vis) => ({type: CHANGE_VISIBILITY, visibility: vis});
+
 export default mainReducer;

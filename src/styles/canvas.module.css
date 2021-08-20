@@ -6,20 +6,25 @@
 }
 .canvas_header {
   padding: 8px 0;
-  border: 1px solid red;
   background-color: blueviolet;
   text-align: center;
 }
 .canvas_body {
   flex-grow: 1;
-  border: 1px solid red;
 }
 
 .block_with_canvas {
   display: block;
-  background-color: yellow;
+  background-color: blanchedalmond;
   width: 100%;
   height: 100%;
+}
+
+.elem_out {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  border: 2px solid black;
 }
 
 /*# sourceMappingURL=canvas.module.css.map */
