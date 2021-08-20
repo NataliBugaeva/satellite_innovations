@@ -6,7 +6,7 @@
 
   &_header {
     padding: 20px 0;
-    background-color: blueviolet;
+    background-color: #bb87ec;
     text-align: center;
   }
 
@@ -28,18 +28,18 @@
 }
 
 .square {
-  margin: 0 auto;
   width: 70px;
   height: 70px;
-  background-color: red;
+  margin: 0 auto;
+  background-color: #07b189;
 }
 
 .circle {
-  margin: 0 auto;
   width: 70px;
   height: 70px;
+  margin: 0 auto;
   border-radius: 50%;
-  background-color: green;
+  background-color: #005cff;
 }
 
 

@@ -1,11 +1,11 @@
 .main {
   position: relative;
-  margin: 0 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
   flex-grow: 1;
-  background-color: blanchedalmond;
+  margin: 0 0;
+  background-color: #fde3ff;
 }
 
 .central_part {

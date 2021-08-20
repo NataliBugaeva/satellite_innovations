@@ -1,3 +1,9 @@
+button {
+  background-color: black;
+  color: white;
+  border-radius: 20px;
+}
+
 .canvas {
   display: flex;
   flex-direction: column;
@@ -6,16 +12,17 @@
 }
 .canvas_header {
   padding: 8px 0;
-  background-color: blueviolet;
+  background-color: #bb87ec;
   text-align: center;
 }
 .canvas_body {
   flex-grow: 1;
+  border: 1px solid black;
 }
 
 .block_with_canvas {
   display: block;
-  background-color: blanchedalmond;
+  background-color: #fde3ff;
   width: 100%;
   height: 100%;
 }

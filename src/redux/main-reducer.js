@@ -1,26 +1,16 @@
-/*const CHANGE_CURSOR_CORDINATES = 'CHANGE-CURSOR-CORDINATES';*/
 const COUNT_CANVAS_CORDINATES = 'COUNT-CANVAS-CORDINATES';
 const CHANGE_ELEMENT = 'CHANGE-ELEMENT';
 const CHOOSE_ELEMENT = 'CHOOSE-ELEMENT';
-
 const PUSH_NEW_ELEM = 'PUSH-NEW-ELEM';
 const CHANGE_ELEMENTS_ARR = 'CHANGE-ELEMENTS-ARR';
-
 const CHANGE_MOUSE_IS_DOWN = 'CHANGE-MOUSE-IS-DOWN';
 const CHANGE_SELECTED_ELEMENT = 'CHANGE-SELECTED-ELEMENT';
 const CHANGE_SELECTED_ELEMENT_TYPE = 'CHANGE-SELECTED-ELEMENT-TYPE'
-
 const CHANGE_BUTTON_DASABLE = 'CHANGE-BUTTON-DASABLE';
-
 const CHANGE_ELEM_OUT_CORDS = 'CHANGE-ELEM-OUT-CORDS';
 const CHANGE_VISIBILITY = "CHANGE-VISIBILITY";
 
-
 let initialState = {
-  /*  figures: {
-        pointerX: 0,
-        pointerY: 0
-    },*/
     canvas: {
         leftTop: {x: 0, y: 0},
         rightTop: {x: 0, y: 0},
@@ -31,22 +21,17 @@ let initialState = {
     arrElements: [],
     mouseIsDown: false,
     selected: false,
-    /*selectedElement: '',*/
     selectedElementType: '',
-
     buttonState: true,
-
     elemOutCords: {
         top: -9999999999999,
         left: -999999999999
     },
-
     visibility: false
 }
 
 const mainReducer = (state = initialState, action) => {
     switch (action.type) {
-
         case COUNT_CANVAS_CORDINATES:
             state.canvas.leftTop = action.leftTop;
             state.canvas.rightTop = action.rightTop;
@@ -57,7 +42,6 @@ const mainReducer = (state = initialState, action) => {
         case CHANGE_ELEMENT:
             state.element = action.element;
             return state;
-
 
         case PUSH_NEW_ELEM:
             state.arrElements.unshift(action.element);
@@ -91,7 +75,6 @@ const mainReducer = (state = initialState, action) => {
             state.visibility = action.visibility;
             return state;
 
-
         default:
             return state;
     }
@@ -101,26 +84,15 @@ export const actionCreatorCountCanvasCordinates = (verxLevo, verxPravo, nizPravo
     type: COUNT_CANVAS_CORDINATES,
     leftTop: verxLevo,
     rightTop: verxPravo, rightBottom: nizPravo, leftBottom: nizLevo
-})
-
-/*export const actionCreatorChangeCursorCordinates = (mouse) => ({type: CHANGE_CURSOR_CORDINATES, x: mouse.x, y: mouse.y});*/
-
+});
 export const actionCreatorChangeElement = (elem) => ({type: CHANGE_ELEMENT, element: elem});
-
 export const actionCreatorChoseElem = (elem) => ({type: CHOOSE_ELEMENT, chosenElement: elem});
-
-
 export const actionCreatorPushElem = (elem) => ({type: PUSH_NEW_ELEM, element: elem});
 export const actionCreatorChangeElementsArr = (arrElem) => ({type: CHANGE_ELEMENTS_ARR, arrElem: arrElem});
-
 export const actionCreatorChangeMouseIsDown = (status) => ({type: CHANGE_MOUSE_IS_DOWN, status: status});
-
 export const actionCreatorChangeSelectedElement = (element) => ({type: CHANGE_SELECTED_ELEMENT, element: element});
-
 export const actionCreatorChangeSelectedElementType = (type) => ({type: CHANGE_SELECTED_ELEMENT_TYPE, elementType: type});
-
 export const actionCreatorButtonDisable = (status) => ({type: CHANGE_BUTTON_DASABLE, disabled: status});
-
 export const actionCreatorChangeElemOutCords = (elemOutCords) => ({type: CHANGE_ELEM_OUT_CORDS, elemOutCords: elemOutCords});
 export const actionCreatorChangeVisibility = (vis) => ({type: CHANGE_VISIBILITY, visibility: vis});
 
