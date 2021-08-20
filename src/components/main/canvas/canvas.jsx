@@ -37,7 +37,6 @@ const Canvas = (props) => {
         nizLevo = {x: left, y: bottom}
 
         props.dispatch(actionCreatorCountCanvasCordinates(verxLevo, verxPravo, nizPravo, nizLevo));
-        console.log(props.state.mainPage.canvas.leftTop.x, props.state.mainPage.canvas.leftTop.y);
     }
 
     window.onload = () => {
@@ -185,7 +184,6 @@ const Canvas = (props) => {
         elements.reverse();
         props.dispatch(actionCreatorChangeElementsArr(elements));
         props.dispatch(actionCreatorButtonDisable(true));
-        console.log(props.state.mainPage.arrElements.length);
     }
 
 
@@ -224,17 +222,14 @@ const Canvas = (props) => {
                 let y = mouseCord.y - i.y;
                 let c = Math.sqrt(x ** 2 + y ** 2);
                 if (c < 35) {
-                    console.log('на круге');
                     return i;
                 }
             } else if (i.topLeft) {
                 if ((mouseCord.x >= i.topLeft.x) && (mouseCord.x <= i.topLeft.x + 70)
                     && (mouseCord.y >= i.topLeft.y) && (mouseCord.y <= i.topLeft.y + 70)) {
-                    console.log('на квадрате');
                     return i;
                 }
             }
-            console.log('не на фигуре');
             return '';
         });
 
@@ -272,10 +267,6 @@ const Canvas = (props) => {
     window.onmouseup = () => {
         props.dispatch(actionCreatorChangeVisibility(true));
         props.dispatch(actionCreatorChangeMouseIsDown(false));
-        console.log(props.state.mainPage.arrElements.length);
-        console.log(props.state.mainPage.selected);
-        console.log(props.state.mainPage.selectedElementType);
-        console.log(props.state.mainPage.selected, props.state.mainPage.selectedElementType);
     }
 
     window.onmousemove = (e) => {
@@ -324,7 +315,6 @@ const Canvas = (props) => {
                 props.dispatch(actionCreatorChangeElementsArr(elements));
                 props.dispatch(actionCreatorChangeElemOutCords(elemOutCords));
                 props.dispatch(actionCreatorChangeVisibility(false));
-                console.log(props.state.mainPage.arrElements.length);
             }
         }
     }
